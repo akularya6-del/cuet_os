@@ -1,0 +1,34 @@
+# Credential names only. All integrations remain disabled until human auth and verification.
+
+[gemini_ai_studio]
+enabled = false
+api_key_env = "GEMINI_API_KEY"
+
+[vertex_account_a]
+enabled = false
+project_env = "CUET_GCP_PROJECT_A"
+region_env = "CUET_GCP_REGION_A"
+
+[vertex_account_b]
+enabled = false
+project_env = "CUET_GCP_PROJECT_B"
+region_env = "CUET_GCP_REGION_B"
+
+[deepseek]
+enabled = false
+api_key_env = "DEEPSEEK_API_KEY"
+
+[openrouter]
+enabled = false
+api_key_env = "OPENROUTER_API_KEY"
+
+[github_mcp]
+enabled = false
+token_env = "GITHUB_PERSONAL_ACCESS_TOKEN"
+
+[fetch_mcp]
+enabled = false
+
+[notebooklm]
+enabled = false
+mode = "manual-ui-only"

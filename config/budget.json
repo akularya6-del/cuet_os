@@ -1,0 +1,32 @@
+{
+  "cash_monthly_hard_ceiling_usd": 55,
+  "cash_policy": "gated reserve, not a spending target",
+  "human_approval_required_before_paid_call": true,
+  "credit_balances_status": "VERIFY_IN_CONSOLE",
+  "prices": {
+    "deepseek_v4_flash_off_peak": {
+      "input_usd_per_million": 0.22,
+      "output_usd_per_million": 0.66,
+      "evidence_tag": "[OFFICIAL VERIFIED 2026-09-08 IN V5 PACKAGE]"
+    },
+    "gemini_3_pro_le_200k": {
+      "input_usd_per_million": 2,
+      "output_usd_per_million": 12,
+      "evidence_tag": "[TIER B 2026 IN V5 PACKAGE — VERIFY BEFORE USE]"
+    },
+    "claude_sonnet_5": {
+      "input_usd_per_million": 2,
+      "output_usd_per_million": 10,
+      "evidence_tag": "[TIER A 2026-09-06 IN V5 PACKAGE — VERIFY BEFORE USE]"
+    },
+    "claude_opus_5": {
+      "input_usd_per_million": 5,
+      "output_usd_per_million": 25,
+      "evidence_tag": "[TIER A 2026-09-06 IN V5 PACKAGE — VERIFY BEFORE USE]"
+    }
+  },
+  "fx_inr_per_usd": {
+    "value": 94.5,
+    "evidence_tag": "[VERIFIED 2026-09-06 IN V5 PACKAGE — RECHECK MONTHLY]"
+  }
+}

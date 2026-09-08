@@ -1,0 +1,6 @@
+# CUET-OS command gates. Governance remains the primary control; these are defense in depth.
+prefix_rule(pattern = ["git", "push"], decision = "prompt", justification = "Pushes are manual.")
+prefix_rule(pattern = ["rm", "-rf"], decision = "prompt", justification = "Recursive deletes require human approval.")
+prefix_rule(pattern = ["rm", "-fr"], decision = "prompt", justification = "Recursive deletes require human approval.")
+prefix_rule(pattern = ["python", "scripts/spend.py"], decision = "prompt", justification = "Cash spending requires human approval.")
+prefix_rule(pattern = ["python3", "scripts/spend.py"], decision = "prompt", justification = "Cash spending requires human approval.")

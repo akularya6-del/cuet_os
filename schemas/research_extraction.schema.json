@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["claims"],
+  "properties": {
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "source_ref", "evidence_tag"],
+        "properties": {
+          "claim": {"type": "string"},
+          "source_ref": {"type": "string"},
+          "evidence_tag": {"type": "string"}
+        }
+      }
+    }
+  }
+}

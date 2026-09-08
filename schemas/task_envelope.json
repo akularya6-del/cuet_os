@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "type", "engine_hint", "context_pack", "input_files", "instruction", "output_schema", "evidence_tags_required", "budget_usd_max", "deadline", "requester", "created"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "type": {"enum": ["question_validation", "research_extraction", "adjudication", "writing"]},
+    "engine_hint": {"type": "object"},
+    "context_pack": {"type": "string"},
+    "input_files": {"type": "array", "items": {"type": "string"}},
+    "instruction": {"type": "string", "minLength": 1},
+    "output_schema": {"type": "string"},
+    "evidence_tags_required": {"type": "boolean"},
+    "budget_usd_max": {"type": "number", "minimum": 0},
+    "deadline": {"type": "string"},
+    "requester": {"type": "string"},
+    "created": {"type": "string"}
+  }
+}

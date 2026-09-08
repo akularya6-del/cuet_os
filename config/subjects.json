@@ -1,0 +1,62 @@
+{
+  "status": "REQUIRES-2027-CONFIRMATION",
+  "subjects": [
+    {
+      "name": "English",
+      "role": "core",
+      "baseline_out_of_10": 6,
+      "baseline_evidence": "[USER SELF-REPORTED IN V5 PACKAGE]",
+      "exam_weight": null,
+      "target": null,
+      "chapter_list": [],
+      "priority_class": "protect",
+      "unknowns": ["2027 exam weight", "target", "chapter list"]
+    },
+    {
+      "name": "Mathematics",
+      "role": "weakest",
+      "baseline_out_of_10": 0,
+      "baseline_evidence": "[USER SELF-REPORTED IN V5 PACKAGE]",
+      "exam_weight": null,
+      "target": null,
+      "chapter_list": [],
+      "priority_class": "highest",
+      "unknowns": ["2027 exam weight", "target", "chapter list"]
+    },
+    {
+      "name": "Chemistry",
+      "role": "domain",
+      "baseline_out_of_10": null,
+      "baseline_evidence": "[UNKNOWN]",
+      "exam_weight": null,
+      "target": null,
+      "chapter_list": [],
+      "priority_class": "standard",
+      "unknowns": ["baseline", "2027 exam weight", "target", "chapter list"]
+    },
+    {
+      "name": "General Aptitude Test",
+      "role": "weakest",
+      "baseline_out_of_10": 0,
+      "baseline_evidence": "[USER SELF-REPORTED IN V5 PACKAGE]",
+      "exam_weight": null,
+      "target": null,
+      "chapter_list": [],
+      "priority_class": "highest",
+      "unknowns": ["2027 exam weight", "target", "chapter list"]
+    },
+    {
+      "name": "Physical Education",
+      "role": "NIOS fifth subject",
+      "paper_code": "321",
+      "paper_code_evidence": "[HISTORICAL OFFICIAL 2026 — REQUIRES 2027 CONFIRMATION]",
+      "components": ["theory", "practical journal"],
+      "baseline_out_of_10": null,
+      "exam_weight": null,
+      "target": null,
+      "chapter_list": [],
+      "priority_class": "thin-high-yield",
+      "unknowns": ["baseline", "2027 paper details", "exam weight", "target", "chapter list"]
+    }
+  ]
+}

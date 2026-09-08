@@ -1,0 +1,9 @@
+{
+  "correct": 5,
+  "wrong": -1,
+  "unanswered": 0,
+  "status": "REQUIRES-2027-CONFIRMATION",
+  "baseline_cycle": 2026,
+  "evidence_tag": "[HISTORICAL OFFICIAL — 2026 baseline documented in V5; CUET-UG 2027 UNKNOWN]",
+  "verification_trigger": "NTA CUET-UG 2027 notification"
+}

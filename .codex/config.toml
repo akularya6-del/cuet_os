@@ -1,0 +1,28 @@
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# External MCP servers stay disabled until their runtimes/auth are verified.
+# Add fetch only after: uvx mcp-server-fetch --help
+# Add GitHub only after GITHUB_PERSONAL_ACCESS_TOKEN is available in the environment.
+
+# Do not inherit unrelated/global MCP surfaces into CUET-OS. A complete
+# disabled transport is required when shadowing a user-layer server.
+[mcp_servers.notebooklm]
+command = "/usr/bin/false"
+enabled = false
+
+[mcp_servers.mcp-search]
+command = "/usr/bin/false"
+enabled = false
+
+[mcp_servers.hexstrike_ai]
+command = "/usr/bin/false"
+enabled = false
+
+[mcp_servers.node_repl]
+command = "/usr/bin/false"
+enabled = false
+
+[mcp_servers.ruflo]
+command = "/usr/bin/false"
+enabled = false
