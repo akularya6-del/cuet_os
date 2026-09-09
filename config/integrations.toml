@@ -1,16 +1,25 @@
-# Credential names only. All integrations remain disabled until human auth and verification.
+# Credential names only. Account A Vertex is verified; all other integrations remain disabled.
 
 [gemini_ai_studio]
 enabled = false
 api_key_env = "GEMINI_API_KEY"
 
 [vertex_account_a]
-enabled = false
+enabled = true
+auth = "application-default-credentials"
+project = "trim-hash-471406-t4"
+location = "global"
+allowed_publishers = ["google"]
+initial_credit_cap_inr = 100
+cash_fallback = false
+credit_expiry = "2026-10-02"
+credit_scope = "first-party Google Cloud AI eligible; exact SKU list [UNKNOWN]"
 project_env = "CUET_GCP_PROJECT_A"
 region_env = "CUET_GCP_REGION_A"
 
 [vertex_account_b]
 enabled = false
+deferred_until = "2026-12-07"
 project_env = "CUET_GCP_PROJECT_B"
 region_env = "CUET_GCP_REGION_B"
 

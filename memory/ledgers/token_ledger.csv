@@ -1,1 +1,2 @@
 date,category,task,engine,tokens,est_cost_usd,evidence_tag,notes
+2026-09-09,vertex-smoke,account-a-auth-check,gemini-3.8-flash,168,0.000558,[LOCAL OBSERVED 2026-09-09; COST ESTIMATE FROM OFFICIAL PRICING],"Two approved smoke calls: input 24, reasoning/output 144; estimated INR 0.052731 at tagged FX; billing reconciliation pending"

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """ledger.py — single writer for memory ledgers (T0 truth layer).
-Subcommands: block | error | state | verify | compact
+Subcommands: block | error | credit | token | state | verify | compact
 All writes are append-only; STATE.md is regenerated, never hand-edited."""
-import json, os, sys, csv, datetime as dt, tempfile, math
+import argparse, json, os, sys, csv, datetime as dt, tempfile, math, re
 from collections import Counter
+from decimal import Decimal, InvalidOperation
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LED = os.path.join(ROOT, "memory", "ledgers")
@@ -120,6 +121,96 @@ def cmd_error(args):
         "topic": topic, "detail": " ".join(args[2:]), "status": "open"})
     return 0
 
+def cmd_credit(args):
+    parser = argparse.ArgumentParser(prog="ledger.py credit")
+    parser.add_argument("--date", default=dt.date.today().isoformat())
+    parser.add_argument("--account", required=True)
+    parser.add_argument("--currency", required=True)
+    parser.add_argument("--balance-before", required=True)
+    parser.add_argument("--delta", required=True)
+    parser.add_argument("--balance-after", required=True)
+    parser.add_argument("--expiry", required=True)
+    parser.add_argument("--status", required=True, choices=["active", "dormant", "depleted", "expired"])
+    parser.add_argument("--engine", default="")
+    parser.add_argument("--task-ref", default="")
+    parser.add_argument("--evidence-tag", required=True)
+    parser.add_argument("--notes", default="")
+    try:
+        values = vars(parser.parse_args(args))
+        before = Decimal(values["balance_before"])
+        delta = Decimal(values["delta"])
+        after = Decimal(values["balance_after"])
+        dt.date.fromisoformat(values["date"])
+        dt.date.fromisoformat(values["expiry"])
+        if before < 0 or after < 0 or before + delta != after:
+            raise ValueError("balance_before + delta must equal non-negative balance_after")
+        if not values["account"].strip() or not re.fullmatch(r"[A-Z]{3}", values["currency"]):
+            raise ValueError("account and three-letter uppercase currency are required")
+    except (InvalidOperation, ValueError) as error:
+        print(f"invalid credit row: {error}")
+        return 2
+
+    fields = ["date", "account", "currency", "balance_before", "delta", "balance_after", "expiry",
+              "status", "engine", "task_ref", "evidence_tag", "notes"]
+    os.makedirs(LED, exist_ok=True)
+    path = os.path.join(LED, "credit_ledger.csv")
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            old_fields, rows = reader.fieldnames or [], list(reader)
+        if old_fields != fields:
+            if "currency" in old_fields or set(old_fields) - set(fields):
+                print("credit_ledger.csv: incompatible header")
+                return 2
+            with tempfile.NamedTemporaryFile("w", dir=LED, encoding="utf-8", newline="", delete=False) as handle:
+                writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(rows)
+                handle.flush(); os.fsync(handle.fileno())
+                replacement = handle.name
+            os.replace(replacement, path)
+    new_file = not os.path.exists(path)
+    with open(path, "a", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        if new_file:
+            writer.writeheader()
+        writer.writerow(values)
+    print(f"appended to credit_ledger.csv: account {values['account']}")
+    return 0
+
+def cmd_token(args):
+    parser = argparse.ArgumentParser(prog="ledger.py token")
+    parser.add_argument("--date", default=dt.date.today().isoformat())
+    parser.add_argument("--category", required=True)
+    parser.add_argument("--task", required=True)
+    parser.add_argument("--engine", required=True)
+    parser.add_argument("--tokens", required=True, type=int)
+    parser.add_argument("--est-cost-usd", required=True)
+    parser.add_argument("--evidence-tag", required=True)
+    parser.add_argument("--notes", default="")
+    values = vars(parser.parse_args(args))
+    try:
+        dt.date.fromisoformat(values["date"])
+        cost = Decimal(values["est_cost_usd"])
+        if values["tokens"] < 0 or cost < 0:
+            raise ValueError("tokens and estimated cost must be non-negative")
+        if not all(values[key].strip() for key in ("category", "task", "engine", "evidence_tag")):
+            raise ValueError("category, task, engine and evidence tag are required")
+    except (InvalidOperation, ValueError) as error:
+        print(f"invalid token row: {error}")
+        return 2
+    fields = ["date", "category", "task", "engine", "tokens", "est_cost_usd", "evidence_tag", "notes"]
+    os.makedirs(LED, exist_ok=True)
+    path = os.path.join(LED, "token_ledger.csv")
+    new_file = not os.path.exists(path)
+    with open(path, "a", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        if new_file:
+            writer.writeheader()
+        writer.writerow(values)
+    print(f"appended to token_ledger.csv: {values['engine']} {values['tokens']} tokens")
+    return 0
+
 def recent_blocks(days):
     cutoff = dt.datetime.now().astimezone() - dt.timedelta(days=days)
     recent = []
@@ -148,7 +239,11 @@ def cmd_state(_args):
         f"blocks_logged_7: {len(recent_blocks(7))}",
     ]
     if mocks:
-        lines.append(f"last_mock: {mocks[-1].get('total')}  band: see mock_results.jsonl")
+        latest = mocks[-1]
+        if latest.get("total_kind") == "correct_count_not_exam_marks":
+            lines.append(f"last_assessment: {latest.get('correct')} correct of {latest.get('attempted')} attempted (legacy diagnostic; not exam marks)")
+        else:
+            lines.append(f"last_mock: {latest.get('total')}  band: see mock_results.jsonl")
     lines += ["", "## warnings", "run bootstrap_check.py for live warnings", "",
               "## open confusions", *[f"- {b['confusion']}" for b in blocks if b.get("confusion")][:5]]
     with open(STATE, "w", encoding="utf-8") as f:
@@ -163,7 +258,7 @@ def cmd_verify(_args):
         except (json.JSONDecodeError, ValueError, TypeError) as e: print(f"{name}: CORRUPT {e}"); ok = False
     headers = {
         "token_ledger.csv": {"date", "category", "task", "engine", "tokens", "est_cost_usd", "evidence_tag", "notes"},
-        "credit_ledger.csv": {"date", "account", "balance_before", "delta", "balance_after", "expiry", "status", "engine", "task_ref", "evidence_tag", "notes"},
+        "credit_ledger.csv": {"date", "account", "currency", "balance_before", "delta", "balance_after", "expiry", "status", "engine", "task_ref", "evidence_tag", "notes"},
         "cash_ledger.csv": {"date", "usd", "engine", "task_ref", "approved_by", "evidence_tag", "notes"},
     }
     for name, required in headers.items():
@@ -209,7 +304,7 @@ def cmd_compact(_args):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2: print(__doc__); sys.exit(2)
-    cmds = {"block": cmd_block, "error": cmd_error, "state": cmd_state, "verify": cmd_verify, "compact": cmd_compact}
+    cmds = {"block": cmd_block, "error": cmd_error, "credit": cmd_credit, "token": cmd_token, "state": cmd_state, "verify": cmd_verify, "compact": cmd_compact}
     if sys.argv[1] not in cmds:
         print(__doc__); sys.exit(2)
     sys.exit(cmds[sys.argv[1]](sys.argv[2:]))

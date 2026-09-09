@@ -43,12 +43,16 @@ time efficiency — not technical elegance. Studying always outranks system work
 
 ## Model/tool routing defaults
 - Interactive reasoning, coding, verification: yourself (Codex).
-- Volume generation: scripts → DeepSeek V4 Flash (off-peak) or Gemini free tier.
-- Long-context research reading: Gemini via API/Vertex (credits) or NotebookLM.
+- Volume generation while Account A is active: `scripts/dispatch.py` → Gemini 3.8 Flash on Vertex; outputs still pass deterministic validators before bank admission.
+- Long-context research reading: stable Gemini 2.5 Pro on Vertex; Gemini 3.1 Pro Preview only behind its explicit preview gate.
 - Source-grounded lookup: NotebookLM (never canonical; docs/09 contract).
-- Claude-class second opinion: scripts → Anthropic API or Vertex Claude
-  (credits) — GATED by docs/11 §7 cash/reserve rules.
+- Claude-class second opinion is disabled under the current Free Trial; third-party managed models are not assumed credit-covered.
 - Parallel work: use subagents for noisy independent tasks (docs/02 §8).
+
+## Current Google-credit posture
+- Account A project: `trim-hash-471406-t4`; global Vertex endpoint; expires 2026-10-02.
+- Account A is in EXPIRING mode: prefer score-bearing durable assets, but never displace study blocks or weaken validation.
+- Account B is deferred. Do not ask about or use it before 2026-12-07 unless the human says it has become absolutely necessary.
 
 ## Verification requirements
 - Deterministic validators run 100% of the time on generated questions and

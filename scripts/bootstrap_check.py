@@ -55,13 +55,16 @@ def main():
             for row in csv.DictReader(f):
                 balances[row.get("account", "A")] = row
         for acct, row in balances.items():
+            if row.get("status", "active").lower() != "active":
+                continue
             exp = row.get("expiry", "")
             if exp:
                 try:
                     days = (dt.date.fromisoformat(exp) - dt.date.today()).days
                     bal = row.get("balance_after", row.get("balance", "?"))
-                    if days < 45: warn(f"Account {acct}: credit expires in {days}d, balance ${bal} — check 11 §3 branch"); warnings += 1
-                    else: info(f"Account {acct}: ${bal} left, expires in {days}d")
+                    currency = row.get("currency", "UNKNOWN") or "UNKNOWN"
+                    if days < 45: warn(f"Account {acct}: credit expires in {days}d, balance {currency} {bal} — check 11 §3 branch"); warnings += 1
+                    else: info(f"Account {acct}: {currency} {bal} left, expires in {days}d")
                 except ValueError:
                     warn(f"Account {acct}: expiry '{exp}' unparseable — verify in console"); warnings += 1
     # 4) marking scheme confirmation state

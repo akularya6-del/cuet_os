@@ -1,3 +1,4 @@
-date,account,balance_before,delta,balance_after,expiry,status,engine,task_ref,evidence_tag,notes
-2026-09-08,A,299,0,299,UNKNOWN,active,,,"[USER VERIFIED 2026-09-08]","Package records approximate expiry ~2026-12-07; verify exact console value"
-2026-09-08,B,300,0,300,UNKNOWN,dormant,,,"[USER VERIFIED 2026-09-08]","Package records activation ~2026-12-07; exact activation/status/expiry require console verification"
+date,account,currency,balance_before,delta,balance_after,expiry,status,engine,task_ref,evidence_tag,notes
+2026-09-08,A,,299,0,299,UNKNOWN,active,,,[USER VERIFIED 2026-09-08],Package records approximate expiry ~2026-12-07; verify exact console value
+2026-09-08,B,,300,0,300,UNKNOWN,dormant,,,[USER VERIFIED 2026-09-08],Package records activation ~2026-12-07; exact activation/status/expiry require console verification
+2026-09-09,A,INR,28320.75,-9433.05,18887.70,2026-10-02,active,google-cloud,console-reconciliation,[USER-PROVIDED SCREENSHOT VERIFIED 2026-09-09],Free Trial; original INR 28320.75; remaining INR 18887.70; 67% displayed; start 2026-07-03; net pricing; exact SKU scope [UNKNOWN]

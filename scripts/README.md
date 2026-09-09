@@ -10,6 +10,8 @@ Deterministic, zero-AI helpers referenced by the 16 implementation files. Copy i
 | `router.py` | `python3 scripts/router.py --task "generate 30 MCQs" --data --value 6 --unc 2 --err 2 --rev r --imp 6` | Deterministic MCV precheck → tier recommendation JSON (03 §2, §5) |
 | `scorer.py` | `python3 scripts/scorer.py mock_answers.csv` | Zero-AI mock scoring from official key (+5/−1 from config), appends mock_results.jsonl (08 §5) |
 | `validate_change.py` | `python3 scripts/validate_change.py` | Governance gate: English-only check, secret scan, AGENTS.md size budget (12 §6, 13 §2-A20) |
+| `dispatch.py` | `.venv/bin/python scripts/dispatch.py --task volume --prompt "..."` | Dry-run-first Account-A Vertex Gemini router; execution requires the explicit approval cap |
+| `import_legacy.py` | `python3 scripts/import_legacy.py ~/Desktop/CUET_OS_2027` | Review or idempotently apply the one-day-shifted legacy diagnostic import |
 
 Smoke test (after copying into a repo with the memory/ tree):
 
@@ -20,7 +22,7 @@ python3 scripts/validate_change.py
 python3 scripts/bootstrap_check.py --quick
 ```
 
-**Not included by design:** API-calling batch scripts (question generation, DeepSeek/Gemini
-dispatch, credit probes). They require your keys and engine choices at deployment time
-(02 §6 env setup, 11 §2 verification). Codex will scaffold them against the schemas on
-first run of the DRILL workflow — the shell boundary (00 §2) is the contract they implement.
+Install the pinned Vertex SDK locally with
+`python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`. Account B remains
+rejected until its scheduled human review. Question generation remains gated by the bank schema
+and validators; dispatcher output is never admitted directly into `bank/`.

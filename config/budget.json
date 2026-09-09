@@ -2,17 +2,34 @@
   "cash_monthly_hard_ceiling_usd": 55,
   "cash_policy": "gated reserve, not a spending target",
   "human_approval_required_before_paid_call": true,
-  "credit_balances_status": "VERIFY_IN_CONSOLE",
+  "vertex_initial_approved_cap_inr": 100,
+  "vertex_cash_fallback": false,
+  "credit_balances_status": "ACCOUNT_A_VERIFIED_2026-09-09; ACCOUNT_B_DEFERRED",
   "prices": {
     "deepseek_v4_flash_off_peak": {
       "input_usd_per_million": 0.22,
       "output_usd_per_million": 0.66,
       "evidence_tag": "[OFFICIAL VERIFIED 2026-09-08 IN V5 PACKAGE]"
     },
-    "gemini_3_pro_le_200k": {
+    "gemini_3_8_flash_global_through_2026_12_31": {
+      "input_usd_per_million": 0.75,
+      "output_usd_per_million": 3.75,
+      "evidence_tag": "[OFFICIAL VERIFIED 2026-09-09]"
+    },
+    "gemini_2_5_pro_le_200k": {
+      "input_usd_per_million": 1.25,
+      "output_usd_per_million": 10,
+      "evidence_tag": "[OFFICIAL VERIFIED 2026-09-09]"
+    },
+    "gemini_3_1_pro_preview_le_200k": {
       "input_usd_per_million": 2,
       "output_usd_per_million": 12,
-      "evidence_tag": "[TIER B 2026 IN V5 PACKAGE — VERIFY BEFORE USE]"
+      "evidence_tag": "[OFFICIAL VERIFIED 2026-09-09 — PREVIEW, EXPLICIT GATE ONLY]"
+    },
+    "gemini_3_1_flash_lite_global": {
+      "input_usd_per_million": 0.25,
+      "output_usd_per_million": 1.5,
+      "evidence_tag": "[OFFICIAL VERIFIED 2026-09-09]"
     },
     "claude_sonnet_5": {
       "input_usd_per_million": 2,

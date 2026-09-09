@@ -63,3 +63,13 @@ Bootstrap currently returns its documented warning status because both exact Goo
 4. A private Git remote is optional and remains unconfigured; authenticate and authorize it only when backup pushes are desired. [UNKNOWN]
 
 First use: `cd /Users/racoon/Desktop/wow/cuet_os && codex --profile cuet`, then type `START`.
+
+## Account-A Vertex activation — 2026-09-09
+
+- Console evidence corrected Account A to INR 18,887.70 remaining from INR 28,320.75, expiring 2026-10-02; exact SKU list remains [UNKNOWN]. Account B is deferred until 2026-12-07. [USER-PROVIDED CONSOLE SCREENSHOT VERIFIED 2026-09-09]
+- Direct Vertex Gemini access is enabled for project `trim-hash-471406-t4` on the global endpoint using ADC and the pinned `google-genai` SDK. No API key was created or stored. [LOCAL VERIFIED 2026-09-09]
+- Live model routes: Gemini 3.8 Flash for volume, stable Gemini 2.5 Pro for complex work, and Gemini 3.1 Pro Preview only through an explicit preview gate. [LIVE MODEL GARDEN VERIFIED 2026-09-09]
+- Two bounded smoke calls used 168 observed tokens and returned `CUET_VERTEX_OK`; estimated total cost is USD 0.000558 / about INR 0.053, pending billing reconciliation. The first 32-token response exhausted its allowance on reasoning; the dispatcher now rejects limits below 128 and empty responses. [LOCAL OBSERVED + ESTIMATE 2026-09-09]
+- Current Free Trial terms do not support assuming third-party managed models are credit-covered, so Claude-on-Vertex remains disabled. [OFFICIAL VERIFIED 2026-09-09]
+- Legacy Claude Desktop context imported: two diagnostic mocks, 22 mastery observations, and one compressed profile decision, all shifted forward one day. No planned week was recorded as executed study and no V4 harness/configuration was copied. [LEGACY ARTIFACT IMPORTED 2026-09-09]
+- Verification: 61 tests pass; Python compilation, ledger verification, idempotent re-import, governance validation, dispatcher dry-run, and bootstrap all execute. Bootstrap's sole warning is the intentional 23-day Account-A expiry warning. A fresh `codex --profile cuet exec START` loaded the project, ran bootstrap, read derived state and requested exactly the five check-in fields. [LOCAL VERIFIED 2026-09-09]

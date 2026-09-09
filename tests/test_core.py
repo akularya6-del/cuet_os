@@ -93,6 +93,25 @@ def test_state_uses_date_windows_not_record_counts(tmp_path):
     assert "blocks_logged_7: 1" in state
 
 
+def test_state_labels_legacy_diagnostic_as_correct_count_not_exam_score(tmp_path):
+    ledger = load_script("ledger")
+    ledger.LED = str(tmp_path / "memory" / "ledgers")
+    ledger.STATE = str(tmp_path / "memory" / "STATE.md")
+    ledger.append("mock_results.jsonl", {
+        "id": "legacy-mock", "ts": "2026-09-07T00:00:00+05:30",
+        "scheme_status": "[UNKNOWN] legacy diagnostic", "total": 25,
+        "total_kind": "correct_count_not_exam_marks", "attempted": 42, "correct": 25,
+        "accuracy_on_attempted": 0.595,
+        "sections": {"diagnostic": {"attempted": 42, "correct": 25, "wrong": 17,
+                                      "skipped": 8, "marks": 25}},
+        "tentative_errors": {"legacy_unmapped_wrong": 17},
+    })
+    assert ledger.cmd_state([]) == 0
+    state = Path(ledger.STATE).read_text(encoding="utf-8")
+    assert "last_assessment: 25 correct of 42 attempted" in state
+    assert "last_mock: 25" not in state
+
+
 def test_ledger_compact_archives_outside_active_ledgers(tmp_path):
     ledger = load_script("ledger")
     ledger.LED = str(tmp_path / "memory" / "ledgers")
@@ -158,7 +177,7 @@ def test_router_credit_mode_excludes_dormant_reserve(tmp_path):
     router = load_script("router")
     router.LED = str(tmp_path)
     (tmp_path / "credit_ledger.csv").write_text(
-        "date,account,balance_before,balance_after,status\n2026-09-08,A,299,0,active\n2026-09-08,B,300,300,dormant\n",
+        "date,account,currency,balance_before,delta,balance_after,status\n2026-09-08,A,USD,299,-299,0,active\n2026-09-08,B,USD,300,0,300,dormant\n",
         encoding="utf-8",
     )
     assert router.credit_mode()[0] == "EMERGENCY"
@@ -168,10 +187,10 @@ def test_router_credit_mode_retains_original_active_capacity(tmp_path):
     router = load_script("router")
     router.LED = str(tmp_path)
     (tmp_path / "credit_ledger.csv").write_text(
-        "date,account,balance_before,balance_after,status\n"
-        "2026-09-01,A,299,51,active\n"
-        "2026-09-08,A,51,50,active\n"
-        "2026-09-08,B,300,300,dormant\n",
+        "date,account,currency,balance_before,delta,balance_after,expiry,status\n"
+        "2026-09-01,A,USD,299,-248,51,2099-01-01,active\n"
+        "2026-09-08,A,USD,51,-1,50,2099-01-01,active\n"
+        "2026-09-08,B,USD,300,0,300,UNKNOWN,dormant\n",
         encoding="utf-8",
     )
     assert router.credit_mode()[0] == "PEAK"
@@ -294,6 +313,27 @@ def test_validate_change_default_scans_project_and_marking_invariants(tmp_path):
     sys.argv = ["validate_change.py"]
     try:
         assert validator.main() == 1
+    finally:
+        sys.argv = old_argv
+
+
+def test_validate_change_ignores_local_virtual_environment(tmp_path):
+    validator = load_script("validate_change")
+    validator.ROOT = str(tmp_path)
+    (tmp_path / "AGENTS.md").write_text("safe\n", encoding="utf-8")
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "marking_scheme.json").write_text(
+        json.dumps({"correct": 5, "wrong": -1, "unanswered": 0,
+                    "status": "REQUIRES-2027-CONFIRMATION", "baseline_cycle": 2026,
+                    "evidence_tag": "[HISTORICAL OFFICIAL — CUET-UG 2027 UNKNOWN]"}),
+        encoding="utf-8",
+    )
+    (tmp_path / ".venv").mkdir()
+    (tmp_path / ".venv" / "third_party.py").write_text("sk-" + "A" * 16, encoding="utf-8")
+    old_argv = sys.argv
+    sys.argv = ["validate_change.py"]
+    try:
+        assert validator.main() == 0
     finally:
         sys.argv = old_argv
 

@@ -22,7 +22,7 @@ def main():
             rc |= fail(f"{p}: missing"); continue
         if os.path.isdir(full):
             for dp, dns, fns in os.walk(full):
-                dns[:] = [name for name in dns if name not in {".git", ".pytest_cache", "__pycache__"}]
+                dns[:] = [name for name in dns if name not in {".git", ".pytest_cache", ".venv", "__pycache__"}]
                 for fn in fns:
                     if fn.endswith((".md", ".json", ".jsonl", ".csv", ".toml", ".rules", ".py", ".html")):
                         rc |= check(os.path.join(dp, fn), os.path.relpath(os.path.join(dp, fn), ROOT))

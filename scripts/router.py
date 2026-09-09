@@ -20,35 +20,54 @@ def cash_this_month():
                 except ValueError: pass
     return tot
 
-def credit_mode():
+def credit_mode(today=None):
     p = os.path.join(LED, "credit_ledger.csv")
     if not os.path.exists(p): return "NORMAL", None
     latest = {}
-    capacity = {}
+    epochs = {}
     with open(p) as f:
         for row in csv.DictReader(f):
             account = row.get("account", "A")
             latest[account] = row
+            currency = row.get("currency", "").strip()
+            prior = epochs.get(account)
+            if not currency:
+                epochs[account] = None
+                continue
             try:
-                capacity[account] = max(capacity.get(account, 0), float(row.get("balance_before", 0)), float(row.get("balance_after", row.get("balance", 0))))
-            except ValueError:
-                pass
-    balances = []
-    capacities = []
-    for row in latest.values():
+                before = float(row["balance_before"])
+                delta = float(row["delta"])
+                after = float(row["balance_after"])
+            except (KeyError, TypeError, ValueError):
+                epochs[account] = None
+                continue
+            if before < 0 or after < 0 or abs(before + delta - after) > 0.000001:
+                epochs[account] = None
+                continue
+            if prior is None or prior["currency"] != currency:
+                epochs[account] = {"currency": currency, "capacity": max(before, after), "balance": after}
+            else:
+                prior["capacity"] = max(prior["capacity"], before, after)
+                prior["balance"] = after
+    ratios = []
+    days_left = []
+    for account, row in latest.items():
         if row.get("status", "active").lower() != "active":
             continue
+        epoch = epochs.get(account)
+        if not epoch or epoch["capacity"] <= 0:
+            return "EMERGENCY", latest
         try:
-            balance = float(row.get("balance_after", row.get("balance", 0)))
-            balances.append(balance)
-            capacities.append(capacity.get(row.get("account", ""), 0))
-        except ValueError: continue
-    if not balances:
+            days_left.append((dt.date.fromisoformat(row["expiry"]) - (today or dt.date.today())).days)
+        except (KeyError, TypeError, ValueError):
+            return "EMERGENCY", latest
+        ratios.append(epoch["balance"] / epoch["capacity"])
+    if not ratios:
         return "EMERGENCY", None
-    total = sum(balances)
-    if total <= 0: return "EMERGENCY", latest
-    ratio = total / sum(capacities) if sum(capacities) else 0
+    ratio = min(ratios)
+    if ratio <= 0 or min(days_left) < 0: return "EMERGENCY", latest
     if ratio < 0.30: return "PEAK", latest
+    if min(days_left) <= 30: return "EXPIRING", latest
     if ratio < 0.60: return "HEAVY", latest
     return "NORMAL", latest
 
@@ -71,6 +90,7 @@ def main():
     if a.data and mcv >= 48: tier = "shell boundary overrides: run via scripts at T2, sample-check 5-10%"
     if a.sensitive: note.append("PERSONAL/HIGH data: DeepSeek/GLM/Qwen/NotebookLM/proxy FORBIDDEN (13 §4)")
     if mode in ("PEAK", "EMERGENCY"): note.append(f"reservoir mode {mode}: credits restricted (11 §4)")
+    if mode == "EXPIRING": note.append("reservoir mode EXPIRING: front-load score-bearing durable assets before expiry (11 §4)")
     if cash_this_month() > 40: note.append(f"cash this month ${cash_this_month():.2f}: approaching cap, gates tighten")
     in_codex = not tier.startswith(("T0", "shell"))
     out = {"task": a.task, "mcv": round(mcv, 1), "tier": tier, "engine": None,
