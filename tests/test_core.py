@@ -73,6 +73,22 @@ def test_ledger_error_command_rejects_missing_fields_without_crashing(tmp_path):
     assert ledger.cmd_error(["E1"]) == 2
 
 
+def test_ledger_error_command_uses_unique_ids_when_clock_second_is_fixed(tmp_path, monkeypatch):
+    ledger = load_script("ledger")
+    ledger.LED = str(tmp_path)
+
+    class FixedDateTime(dt.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls(2026, 9, 9, 0, 0, 0, tzinfo=dt.timezone.utc)
+
+    monkeypatch.setattr(ledger.dt, "datetime", FixedDateTime)
+    assert ledger.cmd_error(["E9", "trig", "first"]) == 0
+    assert ledger.cmd_error(["E2", "trig", "second"]) == 0
+    rows = ledger.read("error_log.jsonl")
+    assert len({row["id"] for row in rows}) == 2
+
+
 def test_ledger_block_rejects_impossible_score(tmp_path):
     ledger = load_script("ledger")
     ledger.LED = str(tmp_path)

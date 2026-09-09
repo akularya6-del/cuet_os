@@ -73,3 +73,7 @@ First use: `cd /Users/racoon/Desktop/wow/cuet_os && codex --profile cuet`, then 
 - Current Free Trial terms do not support assuming third-party managed models are credit-covered, so Claude-on-Vertex remains disabled. [OFFICIAL VERIFIED 2026-09-09]
 - Legacy Claude Desktop context imported: two diagnostic mocks, 22 mastery observations, and one compressed profile decision, all shifted forward one day. No planned week was recorded as executed study and no V4 harness/configuration was copied. [LEGACY ARTIFACT IMPORTED 2026-09-09]
 - Verification: 61 tests pass; Python compilation, ledger verification, idempotent re-import, governance validation, dispatcher dry-run, and bootstrap all execute. Bootstrap's sole warning is the intentional 23-day Account-A expiry warning. A fresh `codex --profile cuet exec START` loaded the project, ran bootstrap, read derived state and requested exactly the five check-in fields. [LOCAL VERIFIED 2026-09-09]
+
+## Runtime ledger repair — 2026-09-09
+
+- Two error entries created within the same clock second received the same ID. The shared writer now suffixes colliding generated IDs, with a regression test; the two existing append-only rows remain valid evidence and are not rewritten. [LOCAL VERIFIED 2026-09-09]

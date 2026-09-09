@@ -91,6 +91,16 @@ def read(name):
             if line.strip(): out.append(validate_row(name, json.loads(line)))
     return out
 
+
+def next_id(name, prefix):
+    base = f"{prefix}-{dt.datetime.now().astimezone():%Y%m%d-%H%M%S}"
+    existing = {row.get("id") for row in read(name)}
+    candidate, suffix = base, 2
+    while candidate in existing:
+        candidate = f"{base}-{suffix}"
+        suffix += 1
+    return candidate
+
 def cmd_block(args):
     # BLOCK: topic | 50min | 25Q | 18 correct | silly-2,concept-3 | conf: x | next: y
     text = " ".join(args)
@@ -104,7 +114,7 @@ def cmd_block(args):
         print("minutes/questions/correct must contain numbers"); return 2
     if mins <= 0 or qs < 0 or corr < 0 or corr > qs:
         print("minutes must be positive and correct must be between 0 and questions"); return 2
-    append("study_log.jsonl", {"id": f"B-{dt.date.today():%Y%m%d-%H%M%S}", "topic": parts[0],
+    append("study_log.jsonl", {"id": next_id("study_log.jsonl", "B"), "topic": parts[0],
         "minutes": mins, "questions": qs, "correct": corr, "accuracy": round(corr / qs, 3) if qs else None,
         "error_note": parts[4] if len(parts) > 4 else "", "confusion": parts[5].replace("conf:", "").strip() if len(parts) > 5 else "",
         "next": parts[6].replace("next:", "").strip() if len(parts) > 6 else ""})
@@ -117,7 +127,7 @@ def cmd_error(args):
     code, topic = args[0], args[1]
     if code not in TAX:
         print(f"code must be one of {TAX}"); return 2
-    append("error_log.jsonl", {"id": f"E-{dt.date.today():%Y%m%d-%H%M%S}", "code": code,
+    append("error_log.jsonl", {"id": next_id("error_log.jsonl", "E"), "code": code,
         "topic": topic, "detail": " ".join(args[2:]), "status": "open"})
     return 0
 
